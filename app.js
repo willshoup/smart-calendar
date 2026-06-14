@@ -303,7 +303,7 @@ function renderDayDetail(dateStr, events) {
 
     const timeEl = document.createElement('div');
     timeEl.className = 'event-item-time';
-    timeEl.textContent = toTimeDisplay(ev.time);
+    timeEl.textContent = ev.time ? (ev.end_time ? toTimeDisplay(ev.time) + ' - ' + toTimeDisplay(ev.end_time) : toTimeDisplay(ev.time)) : '';
 
     const titleSpan = document.createElement('div');
     titleSpan.className = 'event-item-title';
@@ -403,6 +403,7 @@ const eventModal = {
       document.getElementById('ef-time').value     = event.time     || '';
       document.getElementById('ef-location').value = event.location || '';
       document.getElementById('ef-attendee').value = event.attendee || '';
+      document.getElementById('ef-end-time').value  = event.end_time  || '';
     } else {
       titleEl.textContent = 'New Event';
       editingEventId = null;
@@ -424,6 +425,7 @@ const eventModal = {
     if (result.time)     document.getElementById('ef-time').value     = result.time;
     if (result.location) document.getElementById('ef-location').value = result.location;
     if (result.attendee) document.getElementById('ef-attendee').value = result.attendee;
+    if (result.end_time) document.getElementById('ef-end-time').value  = result.end_time;
   },
 };
 
@@ -440,9 +442,10 @@ document.getElementById('event-form').addEventListener('submit', async e => {
   const time     = document.getElementById('ef-time').value || null;
   const location = document.getElementById('ef-location').value.trim() || null;
   const attendee = document.getElementById('ef-attendee').value.trim() || null;
+  const end_time = document.getElementById('ef-end-time').value || null;
   if (!title) { errEl.textContent = 'Title is required.'; document.getElementById('ef-title').focus(); return; }
   if (!date)  { errEl.textContent = 'Date is required.';  document.getElementById('ef-date').focus();  return; }
-  const payload = { user_id: state.user.id, title, date, time, location, attendee };
+  const payload = { user_id: state.user.id, title, date, time, end_time, location, attendee };
   const submitBtn = e.target.querySelector('button[type="submit"]');
   submitBtn.disabled = true;
   if (editingEventId) {
@@ -677,4 +680,5 @@ async function refreshData() {
   }
   showToast('Back online. Data refreshed.', { type: 'success' });
 }
+
 

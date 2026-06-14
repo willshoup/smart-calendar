@@ -11,11 +11,13 @@ function buildPrompt() {
   return [
     'Analyse this image and extract the single most prominent meeting or event.',
     'Today is ' + dayName + ', ' + dateStr + '. Use this to resolve relative dates like Tuesday, next Friday, or tomorrow into exact YYYY-MM-DD dates.',
+    'Also infer the event duration based on context. Examples: dinner = 2 hours, lunch = 1 hour, golf = 4 hours, coffee = 1 hour, meeting = 1 hour, party = 3 hours, wedding = 5 hours, concert = 3 hours. Calculate end_time by adding the inferred duration to time.',
     'Respond ONLY with a JSON object using this exact schema (no markdown, no extra text):',
     '{',
     '  "title":    "string or null",',
     '  "date":     "YYYY-MM-DD or null",',
     '  "time":     "HH:MM in 24-hour format or null",',
+    '  "end_time": "HH:MM in 24-hour format or null (inferred end time based on event type)",',
     '  "location": "string or null",',
     '  "attendee": "string or null"',
     '}',
@@ -62,6 +64,7 @@ export async function extractEvent(base64Data, mimeType) {
     title:    parsed.title    != null ? parsed.title    : null,
     date:     parsed.date     != null ? parsed.date     : null,
     time:     parsed.time     != null ? parsed.time     : null,
+    end_time: parsed.end_time != null ? parsed.end_time : null,
     location: parsed.location != null ? parsed.location : null,
     attendee: parsed.attendee != null ? parsed.attendee : null,
   };
