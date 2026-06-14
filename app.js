@@ -450,27 +450,32 @@ document.getElementById('event-form').addEventListener('submit', async e => {
   const end_time = document.getElementById('ef-end-time').value || null;
   if (!title) { errEl.textContent = 'Title is required.'; document.getElementById('ef-title').focus(); return; }
   if (!date)  { errEl.textContent = 'Date is required.';  document.getElementById('ef-date').focus();  return; }
-  const payload = { user_id: state.user.id, title, date, time, end_time, location, attendee };
   const submitBtn = e.target.querySelector('button[type="submit"]');
   submitBtn.disabled = true;
-  if (editingEventId) {
-    const { data, error } = await updateEvent(editingEventId, payload);
+  try {
+    const payload = { user_id: state.user.id, title, date, time, end_time, location, attendee };
+    if (editingEventId) {
+      const { data, error } = await updateEvent(editingEventId, payload);
+      if (error) throw new Error(error.message || 'Could not save changes.');
+      state.events = state.events.map(ev => ev.id === data.id ? data : ev);
+      eventModal.close();
+      renderCalendar(state.currentYear, state.currentMonth, state.events);
+      if (state.selectedDate) renderDayDetail(state.selectedDate, state.events);
+      showToast('Event updated.', { type: 'success' });
+    } else {
+      const { data, error } = await createEvent(payload);
+      if (error) throw new Error(error.message || 'Could not create event.');
+      state.events.push(data);
+      eventModal.close();
+      renderCalendar(state.currentYear, state.currentMonth, state.events);
+      if (state.selectedDate === data.date) renderDayDetail(state.selectedDate, state.events);
+      showToast('Event created.', { type: 'success' });
+    }
+  } catch (err) {
+    console.error('Save error:', err);
+    errEl.textContent = err.message || 'Could not save event.';
+  } finally {
     submitBtn.disabled = false;
-    if (error) { submitBtn.disabled = false; errEl.textContent = 'Could not save changes.'; return; }
-    state.events = state.events.map(ev => ev.id === data.id ? data : ev);
-    eventModal.close();
-    renderCalendar(state.currentYear, state.currentMonth, state.events);
-    if (state.selectedDate) renderDayDetail(state.selectedDate, state.events);
-    showToast('Event updated.', { type: 'success' });
-  } else {
-    const { data, error } = await createEvent(payload);
-    submitBtn.disabled = false;
-    if (error) { submitBtn.disabled = false; errEl.textContent = 'Could not create event.'; return; }
-    state.events.push(data);
-    eventModal.close();
-    renderCalendar(state.currentYear, state.currentMonth, state.events);
-    if (state.selectedDate === data.date) renderDayDetail(state.selectedDate, state.events);
-    showToast('Event created.', { type: 'success' });
   }
 });
 
@@ -685,6 +690,7 @@ async function refreshData() {
   }
   showToast('Back online. Data refreshed.', { type: 'success' });
 }
+
 
 
 
