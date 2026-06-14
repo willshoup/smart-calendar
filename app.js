@@ -130,6 +130,8 @@ async function startApp(user) {
   state.user = user;
   document.getElementById('user-email').textContent = user.email;
   showView('app');
+  // Render empty calendar immediately so it shows before data loads
+  renderCalendar(state.currentYear, state.currentMonth, []);
   const [evResult, todResult] = await Promise.all([fetchEvents(user.id), fetchTodos(user.id)]);
   if (evResult.error) showToast('Could not load events.', { type: 'error' });
   else state.events = evResult.data || [];
@@ -451,7 +453,7 @@ document.getElementById('event-form').addEventListener('submit', async e => {
   if (editingEventId) {
     const { data, error } = await updateEvent(editingEventId, payload);
     submitBtn.disabled = false;
-    if (error) { errEl.textContent = 'Could not save changes.'; return; }
+    if (error) { submitBtn.disabled = false; errEl.textContent = 'Could not save changes.'; return; }
     state.events = state.events.map(ev => ev.id === data.id ? data : ev);
     eventModal.close();
     renderCalendar(state.currentYear, state.currentMonth, state.events);
@@ -460,7 +462,7 @@ document.getElementById('event-form').addEventListener('submit', async e => {
   } else {
     const { data, error } = await createEvent(payload);
     submitBtn.disabled = false;
-    if (error) { errEl.textContent = 'Could not create event.'; return; }
+    if (error) { submitBtn.disabled = false; errEl.textContent = 'Could not create event.'; return; }
     state.events.push(data);
     eventModal.close();
     renderCalendar(state.currentYear, state.currentMonth, state.events);
@@ -680,5 +682,7 @@ async function refreshData() {
   }
   showToast('Back online. Data refreshed.', { type: 'success' });
 }
+
+
 
 
