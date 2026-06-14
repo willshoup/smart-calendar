@@ -412,6 +412,9 @@ const eventModal = {
       document.getElementById('event-form').reset();
       if (state.selectedDate) document.getElementById('ef-date').value = state.selectedDate;
     }
+    // Always ensure the submit button is enabled when opening the modal
+    const submitBtn = this.dialog.querySelector('button[type="submit"]');
+    if (submitBtn) submitBtn.disabled = false;
     this.dialog.showModal();
     document.getElementById('ef-title').focus();
   },
@@ -682,6 +685,7 @@ async function refreshData() {
   }
   showToast('Back online. Data refreshed.', { type: 'success' });
 }
+
 
 
 
