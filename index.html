@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Smart Calendar</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ===== SETUP VIEW ===== -->
+  <section id="setup-view" class="view">
+    <div class="form-container">
+      <h1>Smart Calendar Setup</h1>
+      <p>Paste your credentials. They are stored only in this browser.</p>
+      <form id="setup-form" novalidate>
+        <label for="setup-supabase-url">Supabase Project URL
+          <input id="setup-supabase-url" type="url" placeholder="https://xyz.supabase.co" required autocomplete="off" />
+        </label>
+        <label for="setup-supabase-key">Supabase Anon Key
+          <input id="setup-supabase-key" type="text" placeholder="eyJhbGci..." required autocomplete="off" />
+        </label>
+        <label for="setup-gemini-key">Gemini API Key
+          <input id="setup-gemini-key" type="text" placeholder="AIzaSy..." required autocomplete="off" />
+        </label>
+        <div id="setup-error" role="alert" aria-live="polite"></div>
+        <button type="submit">Save &amp; Continue</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- ===== AUTH VIEW ===== -->
+  <section id="auth-view" class="view">
+    <div class="form-container">
+      <h1>Smart Calendar</h1>
+      <form id="auth-form" novalidate>
+        <label for="auth-email">Email
+          <input id="auth-email" type="email" placeholder="you@example.com" required autocomplete="email" />
+        </label>
+        <label for="auth-password">Password
+          <input id="auth-password" type="password" placeholder="Password" required autocomplete="current-password" />
+        </label>
+        <div class="auth-buttons">
+          <button id="btn-login" type="button">Sign In</button>
+          <button id="btn-signup" type="button">Create Account</button>
+        </div>
+        <p id="auth-error" role="alert" aria-live="polite"></p>
+      </form>
+    </div>
+  </section>
+
+  <!-- ===== APP VIEW ===== -->
+  <section id="app-view" class="view">
+
+    <header id="toolbar">
+      <span id="user-email" title="Signed-in user"></span>
+      <div class="toolbar-actions">
+        <button id="btn-upload-screenshot" type="button">📷 Upload Screenshot</button>
+        <button id="btn-add-event" type="button">+ New Event</button>
+        <button id="btn-signout" type="button">Sign Out</button>
+      </div>
+    </header>
+
+    <main id="main-layout">
+
+      <!-- Calendar Panel -->
+      <div id="calendar-panel">
+        <div id="calendar-nav">
+          <button id="btn-prev-month" type="button" aria-label="Previous month">&#8249;</button>
+          <h2 id="calendar-title"></h2>
+          <button id="btn-next-month" type="button" aria-label="Next month">&#8250;</button>
+        </div>
+        <div id="calendar-grid" role="grid" aria-label="Calendar"></div>
+      </div>
+
+      <!-- Day Detail Panel -->
+      <aside id="day-detail-panel">
+        <h3 id="day-detail-title">Select a day</h3>
+        <ul id="day-events-list" aria-label="Events for selected day"></ul>
+      </aside>
+
+      <!-- To-Do Panel -->
+      <aside id="todo-panel">
+        <h3>To-Do</h3>
+        <form id="todo-form" novalidate>
+          <label for="todo-title" class="sr-only">New task</label>
+          <input id="todo-title" type="text" placeholder="New task..." required autocomplete="off" />
+          <label for="todo-due" class="sr-only">Due date</label>
+          <input id="todo-due" type="date" aria-label="Due date" />
+          <button type="submit">Add</button>
+        </form>
+        <ul id="todo-list" aria-label="To-do items"></ul>
+      </aside>
+
+    </main>
+  </section>
+
+  <!-- ===== EVENT MODAL ===== -->
+  <dialog id="event-modal" aria-modal="true" aria-labelledby="event-modal-title">
+    <h2 id="event-modal-title">New Event</h2>
+    <form id="event-form" novalidate>
+      <label for="ef-title">Title *
+        <input id="ef-title" type="text" required autocomplete="off" />
+      </label>
+      <label for="ef-date">Date *
+        <input id="ef-date" type="date" required />
+      </label>
+      <label for="ef-time">Time
+        <input id="ef-time" type="time" />
+      </label>
+      <label for="ef-location">Location
+        <input id="ef-location" type="text" autocomplete="off" />
+      </label>
+      <label for="ef-attendee">Attendee
+        <input id="ef-attendee" type="text" autocomplete="off" />
+      </label>
+      <div id="event-form-error" role="alert" aria-live="polite"></div>
+      <div class="modal-buttons">
+        <button type="submit">Save</button>
+        <button type="button" id="btn-event-cancel">Cancel</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- ===== SCREENSHOT MODAL ===== -->
+  <dialog id="screenshot-modal" aria-modal="true" aria-label="Screenshot preview">
+    <h2>Screenshot Preview</h2>
+    <img id="screenshot-preview" alt="Uploaded screenshot preview" />
+    <p id="screenshot-status" role="status" aria-live="polite"></p>
+    <div class="modal-buttons">
+      <button id="btn-analyse" type="button">Analyse with AI</button>
+      <button id="btn-screenshot-cancel" type="button">Cancel</button>
+    </div>
+  </dialog>
+
+  <!-- Hidden file input for screenshot upload -->
+  <input type="file" id="screenshot-input" accept="image/png,image/jpeg,image/webp,image/heic" style="display:none" aria-hidden="true" tabindex="-1" />
+
+  <!-- Toast container -->
+  <div id="toast-container" aria-live="polite" aria-atomic="false"></div>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
