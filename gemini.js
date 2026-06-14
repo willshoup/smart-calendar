@@ -2,7 +2,7 @@
  * gemini.js - Google Gemini REST API wrapper
  */
 
-const ENDPOINT = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent';
+const ENDPOINT = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
 
 const PROMPT = [
   'Analyse this image and extract the single most prominent meeting or event.',
@@ -61,3 +61,4 @@ export async function extractEvent(base64Data, mimeType) {
     attendee: parsed.attendee != null ? parsed.attendee : null,
   };
 }
+
