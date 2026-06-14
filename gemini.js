@@ -1,21 +1,26 @@
-﻿/**
+/**
  * gemini.js - Google Gemini REST API wrapper
  */
 
 const ENDPOINT = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent';
 
-const PROMPT = [
-  'Analyse this image and extract the single most prominent meeting or event.',
-  'Respond ONLY with a JSON object using this exact schema (no markdown, no extra text):',
-  '{',
-  '  "title":    "string or null",',
-  '  "date":     "YYYY-MM-DD or null",',
-  '  "time":     "HH:MM in 24-hour format or null",',
-  '  "location": "string or null",',
-  '  "attendee": "string or null"',
-  '}',
-  'If no meeting or event is present, respond with exactly: {"detected": false}',
-].join('\n');
+function buildPrompt() {
+  const today = new Date();
+  const dateStr = today.getFullYear() + '-' + String(today.getMonth()+1).padStart(2,'0') + '-' + String(today.getDate()).padStart(2,'0');
+  const dayName = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][today.getDay()];
+  return [
+    'Analyse this image and extract the single most prominent meeting or event.',
+    'Today is ' + dayName + ', ' + dateStr + '. Use this to resolve relative dates like Tuesday, next Friday, or tomorrow into exact YYYY-MM-DD dates.',
+    'Respond ONLY with a JSON object using this exact schema (no markdown, no extra text):',
+    '{',
+    '  "title":    "string or null",',
+    '  "date":     "YYYY-MM-DD or null",',
+    '  "time":     "HH:MM in 24-hour format or null",',
+    '  "location": "string or null",',
+    '  "attendee": "string or null"',
+    '}',
+  ].join('\n');
+}
 
 export async function extractEvent(base64Data, mimeType) {
   const apiKey = localStorage.getItem('sc_gemini_key');
@@ -27,7 +32,7 @@ export async function extractEvent(base64Data, mimeType) {
     body: JSON.stringify({
       contents: [{
         parts: [
-          { text: PROMPT },
+          { text: buildPrompt() },
           { inline_data: { mime_type: mimeType, data: base64Data } },
         ],
       }],
@@ -45,7 +50,7 @@ export async function extractEvent(base64Data, mimeType) {
 
   let parsed;
   try {
-    const cleaned = text.trim().replace(/^ + '`' + json\s*/i, '').replace(/\s* + '`' + \$/i, '');
+    const cleaned = text.trim().replace(/^```json\s*/i, "").replace(/\s*```$/i, "");
     parsed = JSON.parse(cleaned);
   } catch (err) {
     throw new Error('AI response was unreadable. Please retry.');
@@ -61,5 +66,3 @@ export async function extractEvent(base64Data, mimeType) {
     attendee: parsed.attendee != null ? parsed.attendee : null,
   };
 }
-
-

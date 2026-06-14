@@ -1,4 +1,4 @@
-/**
+﻿/**
  * app.js - Smart Calendar main entry point
  * Handles routing, auth, calendar, events, todos, screenshot upload, realtime, offline.
  */
@@ -11,7 +11,7 @@ import {
 } from './supabase-client.js';
 import { extractEvent } from './gemini.js';
 
-// ── Application state ──────────────────────────────────────────────────────────
+// â”€â”€ Application state â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 let state = {
   user: null, events: [], todos: [],
   currentYear: new Date().getFullYear(),
@@ -22,7 +22,7 @@ let editingEventId = null;
 let screenshotBase64 = null;
 let screenshotMime   = null;
 
-// ── View management ────────────────────────────────────────────────────────────
+// â”€â”€ View management â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function showView(name) {
   document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
   const el = document.getElementById(name + '-view');
@@ -35,7 +35,7 @@ function checkSetup() {
             localStorage.getItem('sc_gemini_key'));
 }
 
-// ── Initialisation ─────────────────────────────────────────────────────────────
+// â”€â”€ Initialisation â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 async function init() {
   if (!checkSetup()) { showView('setup'); return; }
   initSupabase();
@@ -46,7 +46,7 @@ async function init() {
 }
 document.addEventListener('DOMContentLoaded', init);
 
-// ── Setup form ─────────────────────────────────────────────────────────────────
+// â”€â”€ Setup form â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 document.getElementById('setup-form').addEventListener('submit', e => {
   e.preventDefault();
   const errEl = document.getElementById('setup-error');
@@ -63,7 +63,7 @@ document.getElementById('setup-form').addEventListener('submit', e => {
   showView('auth');
 });
 
-// ── Auth handlers ──────────────────────────────────────────────────────────────
+// â”€â”€ Auth handlers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function mapAuthError(msg) {
   if (!msg) return 'An unknown error occurred.';
   if (msg.includes('Invalid login credentials')) return 'Email or password is incorrect.';
@@ -125,7 +125,7 @@ function registerAuthStateChange() {
   });
 }
 
-// ── startApp ───────────────────────────────────────────────────────────────────
+// â”€â”€ startApp â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 async function startApp(user) {
   state.user = user;
   document.getElementById('user-email').textContent = user.email;
@@ -140,7 +140,7 @@ async function startApp(user) {
   initRealtime(user.id);
 }
 
-// ── Toast notifications ────────────────────────────────────────────────────────
+// â”€â”€ Toast notifications â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function showToast(message, options = {}) {
   const { type = 'info', persistent = false, onRetry } = options;
   const container = document.getElementById('toast-container');
@@ -167,7 +167,7 @@ function showToast(message, options = {}) {
   closeBtn.className = 'toast-close';
   closeBtn.type = 'button';
   closeBtn.setAttribute('aria-label', 'Dismiss');
-  closeBtn.textContent = '×';
+  closeBtn.textContent = 'Ã—';
   closeBtn.addEventListener('click', () => toast.remove());
   toast.appendChild(closeBtn);
   container.appendChild(toast);
@@ -180,7 +180,7 @@ function dismissPersistentToasts() {
   document.querySelectorAll('#toast-container .toast[data-persistent="true"]').forEach(t => t.remove());
 }
 
-// ── Calendar rendering ─────────────────────────────────────────────────────────
+// â”€â”€ Calendar rendering â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const MONTH_NAMES = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 const DAY_NAMES = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
 
@@ -313,12 +313,12 @@ function renderDayDetail(dateStr, events) {
     li.appendChild(titleSpan);
 
     const metaParts = [];
-    if (ev.location) metaParts.push('📍 ' + ev.location);
-    if (ev.attendee) metaParts.push('👤 ' + ev.attendee);
+    if (ev.location) metaParts.push('ðŸ“ ' + ev.location);
+    if (ev.attendee) metaParts.push('ðŸ‘¤ ' + ev.attendee);
     if (metaParts.length) {
       const meta = document.createElement('div');
       meta.className = 'event-item-meta';
-      meta.textContent = metaParts.join('  ·  ');
+      meta.textContent = metaParts.join('  Â·  ');
       li.appendChild(meta);
     }
 
@@ -388,7 +388,7 @@ function toTimeDisplay(timeStr) {
   return h + ':' + String(mm).padStart(2,'0') + ' ' + ampm;
 }
 
-// ── Event Modal ────────────────────────────────────────────────────────────────
+// â”€â”€ Event Modal â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const eventModal = {
   get dialog() { return document.getElementById('event-modal'); },
   open(event) {
@@ -466,7 +466,7 @@ document.getElementById('event-form').addEventListener('submit', async e => {
   }
 });
 
-// ── To-Do list ─────────────────────────────────────────────────────────────────
+// â”€â”€ To-Do list â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function renderTodos(todos) {
   const list = document.getElementById('todo-list');
   list.innerHTML = '';
@@ -550,7 +550,7 @@ document.getElementById('todo-list').addEventListener('click', async e => {
   renderTodos(state.todos);
 });
 
-// ── Screenshot upload flow ─────────────────────────────────────────────────────
+// â”€â”€ Screenshot upload flow â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const ALLOWED_TYPES = ['image/png', 'image/jpeg', 'image/webp', 'image/heic'];
 
 document.getElementById('btn-upload-screenshot').addEventListener('click', () => {
@@ -597,7 +597,7 @@ document.getElementById('btn-analyse').addEventListener('click', async () => {
   const statusEl   = document.getElementById('screenshot-status');
   const analyseBtn = document.getElementById('btn-analyse');
   const modal      = document.getElementById('screenshot-modal');
-  statusEl.textContent = 'Analysing…';
+  statusEl.textContent = 'Analysingâ€¦';
   analyseBtn.disabled = true;
   try {
     const result = await extractEvent(screenshotBase64, screenshotMime);
@@ -608,8 +608,7 @@ document.getElementById('btn-analyse').addEventListener('click', async () => {
       modal.close();
       screenshotBase64 = null;
       screenshotMime   = null;
-      eventModal.prefill(result);
-      eventModal.open(null);
+      eventModal.open(null); eventModal.prefill(result);
     }
   } catch (err) {
     console.error('extractEvent error:', err);
@@ -619,7 +618,7 @@ document.getElementById('btn-analyse').addEventListener('click', async () => {
   }
 });
 
-// ── Realtime sync ──────────────────────────────────────────────────────────────
+// â”€â”€ Realtime sync â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function initRealtime(userId) {
   subscribeToEvents(userId, {
     onInsert: event => {
@@ -654,7 +653,7 @@ function initRealtime(userId) {
   });
 }
 
-// ── Offline / online detection ─────────────────────────────────────────────────
+// â”€â”€ Offline / online detection â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 window.addEventListener('offline', () => {
   showToast('You are offline. Changes will not save.', { type: 'warning', persistent: true });
 });
@@ -678,3 +677,4 @@ async function refreshData() {
   }
   showToast('Back online. Data refreshed.', { type: 'success' });
 }
+
